@@ -12,6 +12,11 @@ public class C01_DriverIlkTest {
         Driver.getDriver().get("https://google.com");
     }
 
+    @Test
+    public void test02() {
+        Driver driver = new Driver();
+        driver.getDriver().get("htpps://google.com");
+    }
 
 
 }
