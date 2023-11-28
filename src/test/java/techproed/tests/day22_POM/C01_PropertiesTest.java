@@ -5,6 +5,7 @@ import org.testng.annotations.Test;
 import techproed.pages.OpenSourcePage;
 import techproed.utilities.ConfigReader;
 import techproed.utilities.Driver;
+import techproed.utilities.ReusableMethods;
 
 public class C01_PropertiesTest {
 
@@ -40,4 +41,35 @@ public class C01_PropertiesTest {
         //sayfayı kapatalim
         Driver.closeDriver();
     }
+
+
+    //Reusable Methods kullanımı
+    @Test
+    public void test03() throws InterruptedException {
+
+        //https://opensource-demo.orangehrmlive.com/web/index.php/auth/login adrese gidelim
+        Driver.getDriver().get(ConfigReader.getProperty("OpenSourceUrl"));
+
+        //kullaniciAdi, kullaniciSifre, submitButton elementlerini locate edelim login olalım
+        OpenSourcePage openSourcePage = new OpenSourcePage();
+
+        //kullanici=Admin
+        //kullaniciSifre=admin123
+        openSourcePage.userName.sendKeys(ConfigReader.getProperty("OpenSourceUserName"));
+        openSourcePage.password.sendKeys(ConfigReader.getProperty("OpenSourcePassword"));
+        openSourcePage.submitButton.click();
+
+
+        ReusableMethods.visibleWait(openSourcePage.dashBoard,15); //Artık böyle bekle yapacağız.
+
+        //Login Testinin basarili oldugunu test edelim
+        Assert.assertTrue(openSourcePage.dashBoard.isDisplayed());
+        ReusableMethods.screenShot("OpenSource");
+        ReusableMethods.screenShotOfWebElement(openSourcePage.dashBoard);
+
+        //sayfayı kapatalim
+        Driver.closeDriver();
+    }
+
+
 }
