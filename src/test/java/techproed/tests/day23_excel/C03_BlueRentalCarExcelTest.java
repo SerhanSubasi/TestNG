@@ -18,8 +18,8 @@ public class C03_BlueRentalCarExcelTest {
 
         //Excel dosyasindaki tum email ve passwordler ile login olalim ve login oldugumuzu dogrulayalim
         blueRentalPage = new BlueRentalPage();
-        String dosyaYolu = "src\\test\\java\\techproed\\resources\\mysmoketestdata.xlsx";
 
+        String dosyaYolu = "src\\test\\java\\techproed\\resources\\mysmoketestdata.xlsx";
         String sayfaIsmi = "customer_info";
         ExcelReader excelReader = new ExcelReader(dosyaYolu,sayfaIsmi);
         for (int i = 1; i <= excelReader.rowCount(); i++) {
