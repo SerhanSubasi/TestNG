@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Batch189">
+    <test name="Smoe Test">
+       <classes>
+           <class name="techproed.tests.day19_annotations.C01_Notasyonlar"></class>
+           <class name="techproed.tests.day21_POM.C01_DriverIlkTest"></class>
+           <class name="techproed.tests.day21_POM.C02_PageKullanimi"></class>
+       </classes>
+    </test>
+</suite>
+
+<!--ctrl + / yaparak yorum satırı eklenebilir-->

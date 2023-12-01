@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Batch189">
+    <test name="Smoe Test">
+        <packages>
+          <package name="techproed.tests.day19_annotations"></package>
+          <package name="techproed.tests.day20_annotations_softassert"></package>
+        </packages>
+    </test>
+</suite>
+
+<!--ctrl + / yaparak yorum satırı eklenebilir-->
