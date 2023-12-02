@@ -9,45 +9,50 @@ import java.time.Duration;
 
 public class Driver {
 
-    private Driver() { //Default Constructor'ı Private yaptık.
+
         /*
         POM modelde Driver class'ından object oluşturarak getDriver methodu kullanımını engellemeliyiz.
         Bu nedenle singleton pattern kullanımı benimsenmiştir.
         Singleton Pattern: Bir class'ın farklı classlardan object oluşturarak kullanılmasını engellemek için kullanılır.
         Bu yüzden constructor'ı private yaptık.
          */
-    }
-
 
     static WebDriver driver;  //driver singleton olmalı, biricik olmalı. o yüzden static.
 
+        //WebDriver tipinde bir ThreadLocal objecti olusturduk
+        //Bu sayede paralel test yaparken her threadin kendi webdriver objectine sahip olmasini sagladik
+        //ve böylece pralel olarak calisan farkli threadler birbirlerinin webdriverlerini etkileyemezler
+        // ThreadLocal ile her thread için ayrı bir WebDriver objesi oluşturuyoruz.
+        private static ThreadLocal<WebDriver> driverPool = new ThreadLocal<>();
 
+        public static WebDriver getDriver() {
+            if (driverPool.get() == null) {
+                // WebDriver i thread bazında oluşturuyoruz.
+                switch (ConfigReader.getProperty("browser")) {
+                    case "chrome":
+                        driverPool.set(new ChromeDriver());
+                        break;
+                    case "edge":
+                        driverPool.set(new EdgeDriver());
+                        break;
+                    case "safari":
+                        driverPool.set(new SafariDriver());
+                        break;
+                    default:
+                        driverPool.set(new ChromeDriver());
+                }
 
-    public static WebDriver getDriver () {
-
-        if(driver==null){
-            switch (ConfigReader.getProperty("browser")) {
-                case "chrome" :
-                    driver = new ChromeDriver();
-                    break;
-
-                case "edge" :
-                    driver= new EdgeDriver();
-                    break;
-
-                case "safari" :
-                    driver= new SafariDriver();
-                    break;
-
-                default:
-                    driver=new ChromeDriver();
-
+                // Oluşturulan WebDriveri yapılandırıyoruz.
+                driverPool.get().manage().window().maximize();
+                driverPool.get().manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
             }
-            driver.manage().window().maximize();
-            driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
+            // Thread'a özgü WebDriver objecti return ediyoruz.
+            return driverPool.get();
         }
-        return driver;
-    }
+
+        private Driver() {
+            // Singleton pattern
+        }
 
   /*
         Page Object Model'de driver için TestBase classına extends yaparak kullanmak yerine, Driver classı oluşturularak bu classtan
@@ -61,10 +66,12 @@ driver'a değer atanmış olduğu için if block çalışmayacak ve mevcut drive
 test senaryolarımıza devam edebileceğiz.
  */
 
-public static void closeDriver() {
-    if (driver!=null) {
-        driver.close();
-        driver=null;
+    public static void closeDriver() {
+        // Açık olan WebDriver örneğini kapatıyoruz.
+        if (driverPool.get() != null) {
+            driverPool.get().quit();
+            driverPool.remove(); // ThreadLocal'daki referansı temizliyoruz.
+        }
     }
 }
 
@@ -74,4 +81,4 @@ public static void closeDriver() {
  */
 
 
-}
+
